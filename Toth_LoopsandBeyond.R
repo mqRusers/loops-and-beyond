@@ -11,8 +11,6 @@ library("tidyverse")
 # Preliminary notes ####
 # Tidyverse core packages: ggplot2, tibble, tidyr, readr, purrr, dplyr, stringr, forcats
 # Today we will be using mainly tibble and purrr
-# Note that James's talk in March covered dplyr
-# And Kyle's talk in April covered ggplot2
 # Note that tidyverse users like to refer to various bits of syntax using the same "parts of speech" as plain english
   # e.g. a function is usually a verb or an adverb. An object is a noun and a placeholder is a pronoun. 
   # I will occasionally use this terminology because I think it helps to understand the intent and usage of all the bits and pieces.
@@ -30,7 +28,7 @@ library("tidyverse")
 # 1. convert mtcars to a tibble. 
 # We will use tibbles for this workshop. Tibbles are like data.frame()s with some small but important differences. 
 
-df <- as.tibble(mtcars)  
+df <- as_tibble(mtcars)  
 df
 
 # 2. Let's get the median of the first column
@@ -49,7 +47,7 @@ median(df$hp)
 output <- vector("double", ncol(df))  # 1. output: must be pre-allocated or the loop will be very slow
 
 for (i in seq_along(df)) {            # 2. sequence
-  output[[i]] <- median(df[[i]])      # 3. body: this bit does the actual work. Notice the [[ subsetting instead of the [ subsetting
+  output[i] <- median(df[[i]])        # 3. body: this bit does the actual work. Notice the [[ subsetting
 }
 output
 
@@ -65,7 +63,7 @@ seq_along(y)
 
 output <- vector("double", ncol(mtcars))  
 for (i in seq_along(mtcars)) {            
-  output[[i]] <- mean(mtcars[[i]])     
+  output[i] <- mean(mtcars[[i]])     
 }
 output
 
@@ -73,14 +71,15 @@ output
 
 output <- vector("double", ncol(iris))  
 for (i in seq_along(iris)) {            
-  output[[i]] <- class(iris[[i]])     
+  output[i] <- class(iris[[i]])     
 }
 output
 
 # 3. Compute the number of unique values in each column of iris.
 output <- vector("double", ncol(iris))  
 for (i in seq_along(iris)) {            
-  output[[i]] <- length(unique(iris[[i]]))     
+  output[i] <- length(unique(iris[[i]]))
+  #output[i] <- n_distinct(iris[[i]])
 }
 output
 
@@ -180,7 +179,7 @@ col_summary(df, mean)
 ?map_dbl() #makes a double vector.
 ?map_chr() #makes a character vector.
 
-  # Input: a vector and a function. 
+  # Input: a vector or a list and a function. 
   # Returns vector of the same length
   # Return type is specified by the function
   # names are preserved (yay!)
@@ -205,7 +204,7 @@ df %>% map_dbl(sd)
   # an important difference from our col_summary() function is the ability to pass along additional arguments. 
   # additional arguments can also be passed along in the apply functions
 
-df %>% map_dbl(mean, trim = 0.5)
+df %>% map_dbl(mean, trim = 0.1)
 df %>% map_dbl(mean, na.rm = T)
 
   # You can also define your own function to put into the map function
@@ -234,16 +233,15 @@ models <- mtcars %>%
 
 models <- mtcars %>% 
   split(.$cyl) %>% 
-  map(~lm(mpg ~ wt, data = .))  # ~ replaces 'function(df)' in the anonymous function notation
+  map(~lm(mpg ~ wt, data = .x))  # ~ replaces 'function(df)' in the anonymous function notation
 
-  # . is a pronoun. map() uses . like the i in a for loop.  
-  # note there are two different usages of . here (the pipe usage and the map usage)
+  # .x is a pronoun. map() uses .x like the i in a for loop.  
   # It references the current list element that your function is to be run on. 
 
 # 8. Use the anonymous function shorthand to extract the r squared of each model
 models %>% 
   map(summary) %>% 
-  map_dbl(~.$r.squared)
+  map_dbl(~.x$r.squared)
 
 ## but that was also too much typing... and it's a little symbol-heavy...plus this is a common operation
 
@@ -322,7 +320,7 @@ args2 %>%
   str()
 
 
-# 5. You can store all your arguments in a data frame 
+# 5. You can store all your arguments in a data frame
 
 params <- tribble(
   ~mean, ~sd, ~n,

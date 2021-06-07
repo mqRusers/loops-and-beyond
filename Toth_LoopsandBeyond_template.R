@@ -11,8 +11,6 @@ library("tidyverse")
 # Preliminary notes ####
 # Tidyverse core packages: ggplot2, tibble, tidyr, readr, purrr, dplyr, stringr, forcats
 # Today we will be using mainly tibble and purrr
-# Note that James's talk in March covered dplyr
-# And Kyle's talk in April covered ggplot2
 # Note that tidyverse users like to refer to various bits of syntax using the same "parts of speech" as plain english
   # e.g. a function is usually a verb or an adverb. An object is a noun and a placeholder is a pronoun. 
   # I will occasionally use this terminology because I think it helps to understand the intent and usage of all the bits and pieces.
@@ -47,7 +45,7 @@ library("tidyverse")
 	#YOUR CODE HERE  # 1. output: must be pre-allocated or the loop will be very slow
 
 	#YOUR CODE HERE  # 2. sequence
- 	#YOUR CODE HERE  # 3. body: this bit does the actual work. Notice the [[ subsetting instead of the [ subsetting
+ 	#YOUR CODE HERE  # 3. body: this bit does the actual work. 
 
 
 # What happens when you try to use length() and seq_along() on a zero-length vector?
@@ -93,7 +91,7 @@ col_mean <- function(df) {
   	
   	#YOUR CODE HERE
   	
-  }
+  
   output
 }
 
@@ -103,7 +101,7 @@ col_median <- function(df) {
   	
   	#YOUR CODE HERE
   	
-  }
+  
   output
 }
 
@@ -111,7 +109,7 @@ col_sd <- function(df) {
  
  	#YOUR CODE HERE
  
-  }
+  
   output
 }
 
@@ -156,7 +154,7 @@ col_summary(df, mean)
 ?map_dbl() #makes a double vector.
 ?map_chr() #makes a character vector.
 
-  # Input: a vector and a function. 
+  # Input: a vector or a list and a function. 
   # Returns vector of the same length
   # Return type is specified by the function
   # names are preserved (yay!)
@@ -178,7 +176,7 @@ col_summary(df, mean)
   # an important difference from our col_summary() function is the ability to pass along additional arguments. 
   # additional arguments can also be passed along in the apply functions
 
-df %>% map_dbl(mean, trim = 0.5)
+df %>% map_dbl(mean, trim = 0.1)
 df %>% map_dbl(mean, na.rm = T)
 
   # You can also define your own function to put into the map function
@@ -205,8 +203,7 @@ iris %>% map_int(function(x) length(unique(x)))
 	 # replace 'function(df)' with ~ in the anonymous function notation
 	 #YOUR CODE HERE
 
-  # . is a pronoun. map() uses . like the i in a for loop.  
-  # note there are two different usages of . here (the pipe usage and the map usage)
+  # . is a pronoun. map() uses .x like the i in a for loop.  
   # It references the current list element that your function is to be run on. 
 
 # 8. Use the anonymous function shorthand to extract the r squared of each model
